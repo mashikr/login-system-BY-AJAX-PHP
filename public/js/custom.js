@@ -14,7 +14,9 @@ $(document).ready(function() {
         $('#signin-div').slideDown();
     });
 
+
     //////// sign up form validation ////////
+
     var name_reg = /^[a-z A-Z]+$/;
     var email_reg = /^[a-zA-Z0-9_#$&-.!]+@[a-z]+\.[a-z]+$/;
     var password_reg = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])([a-zA-Z0-9_#$&-.!@]+){6,}$/;
@@ -48,13 +50,27 @@ $(document).ready(function() {
         validateEmail(signup_email);
     });
 
-    function validateEmail(email) {
+    async function validateEmail(email) {
         var email_error;
+        $('#email-msg').removeClass('invalid-feedback valid-feedback').html('<i class="fas fa-spinner fa-spin"></i>');
+        $('#signup-email').removeClass('is-valid is-invalid');
         if (email == '') {
             email_error = 'Email cann\'t be empty';
         } else if (!email_reg.test(email)) {
             email_error = 'Enter a valid email';
+        } else {
+            var data = await $.ajax({
+                type: 'POST',
+                url: "/login-ajax/app/ajax/signup.php",
+                data:  {    'email': email  }
+            });
+            if (data == 'true') {
+                email_error = 'This email already taken';
+            }
         }
+
+
+        $('#email-msg').html('');
 
         if (email_error) {
             $('#email-msg').removeClass('valid-feedback').addClass('invalid-feedback').text(email_error);
@@ -65,6 +81,7 @@ $(document).ready(function() {
             $('#signup-email').removeClass('is-invalid').addClass('is-valid');
             return true;
         }
+    
     }
 
     $('#signup-password').focusout(function() {
@@ -118,6 +135,37 @@ $(document).ready(function() {
             return true;
         }
     }
+
+    
+    //////// entry user to database ////////
+
+    $('#signup-btn').click(async function() {
+        var name = $('#signup-name').val().trim();
+        var email = $('#signup-email').val().trim();
+        var password = $('#signup-password').val().trim();
+        var confirm_password = $('#signup-confirm-password').val().trim();
+
+        if (validateName(name) && await validateEmail(email) && validatePassword(password) && validateConfirmPassword(confirm_password)) {
+            var response = await $.get("/login-ajax/app/ajax/signup.php?" + $('#signup-form').serialize());
+            if (response == 1) {
+                $('#registration-info').html('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert"><span>&times;</span></button><strong>Success</strong> Registration complete!</div>');
+            } else {
+                $('#registration-info').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert"><span>&times;</span></button><strong>Failed</strong> Something went wrong!</div>');
+            }
+
+            $('#signup-name').val('').removeClass('is-invalid is-valid');
+            $('#signup-email').val('').removeClass('is-invalid is-valid');
+            $('#signup-password').val('').removeClass('is-invalid is-valid');
+            $('#signup-confirm-password').val('').removeClass('is-invalid is-valid');
+
+            $('#name-msg').text('');
+            $('#email-msg').text('');
+            $('#password-msg').text('');
+            $('#confirm_password-msg').text('');
+        }
+    });
+
+   
 
 
 });
