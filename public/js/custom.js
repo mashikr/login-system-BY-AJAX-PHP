@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     //////// sign up and sign up div toggle ////////
 
-    $('#signin-div').slideUp();
+    $('#signup-div').slideUp();
 
     $('#signin-alt').click(function() {
         $('#signin-div').slideUp();
@@ -139,33 +139,129 @@ $(document).ready(function() {
     
     //////// entry user to database ////////
 
-    $('#signup-btn').click(async function() {
+    $('#signup-btn').click(function() {
         var name = $('#signup-name').val().trim();
         var email = $('#signup-email').val().trim();
         var password = $('#signup-password').val().trim();
         var confirm_password = $('#signup-confirm-password').val().trim();
 
-        if (validateName(name) && await validateEmail(email) && validatePassword(password) && validateConfirmPassword(confirm_password)) {
-            var response = await $.get("/login-ajax/app/ajax/signup.php?" + $('#signup-form').serialize());
-            if (response == 1) {
-                $('#registration-info').html('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert"><span>&times;</span></button><strong>Success</strong> Registration complete!</div>');
-            } else {
-                $('#registration-info').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert"><span>&times;</span></button><strong>Failed</strong> Something went wrong!</div>');
-            }
+        validateEmail(email).then(result => {
+            (async function login() {
+                if (result && validateName(name) && validatePassword(password) && validateConfirmPassword(confirm_password)) {
+                    var response = await $.get("/login-ajax/app/ajax/signup.php?" + $('#signup-form').serialize());
+                    if (response == 1) {
+                        $('#registration-info').html('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert"><span>&times;</span></button><strong>Success</strong> Registration complete!</div>');
+                    } else {
+                        $('#registration-info').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert"><span>&times;</span></button><strong>Failed</strong> Something went wrong!</div>');
+                    }
+        
+                    $('#signup-name').val('').removeClass('is-invalid is-valid');
+                    $('#signup-email').val('').removeClass('is-invalid is-valid');
+                    $('#signup-password').val('').removeClass('is-invalid is-valid');
+                    $('#signup-confirm-password').val('').removeClass('is-invalid is-valid');
+        
+                    $('#name-msg').text('');
+                    $('#email-msg').text('');
+                    $('#password-msg').text('');
+                    $('#confirm_password-msg').text('');
+                }
+            })()
+        });
 
-            $('#signup-name').val('').removeClass('is-invalid is-valid');
-            $('#signup-email').val('').removeClass('is-invalid is-valid');
-            $('#signup-password').val('').removeClass('is-invalid is-valid');
-            $('#signup-confirm-password').val('').removeClass('is-invalid is-valid');
-
-            $('#name-msg').text('');
-            $('#email-msg').text('');
-            $('#password-msg').text('');
-            $('#confirm_password-msg').text('');
-        }
+        
     });
 
-   
+    
+    //////// sign in form ////////
 
+    $('#signin-email').focusout(function() {
+        var signin_email = $(this).val();
+        emailExist(signin_email);
+    });
+
+    async function emailExist(email) {
+        var email_error;
+
+        $('#email-msg-in').removeClass('invalid-feedback valid-feedback').html('<i class="fas fa-spinner fa-spin"></i>');
+
+        if (email == '') {
+            email_error = "Email cann't be empty";
+        } else {
+            var data = await $.ajax({
+                type: 'POST',
+                url: "/login-ajax/app/ajax/signin.php",
+                data:  {    'email': email  }
+            });
+
+            if (data == 'false') {
+                email_error = "This email isn't exist";
+            }
+        }
+        
+
+        $('#email-msg-in').html('');
+
+        if (email_error) {
+            $('#email-msg-in').removeClass('valid-feedback').addClass('invalid-feedback').text(email_error);
+            $('#signin-email').removeClass('is-valid').addClass('is-invalid');
+            return false;            
+        } else {
+            $('#email-msg-in').removeClass('invalid-feedback').addClass('valid-feedback').text('Email exist');
+            $('#signin-email').removeClass('is-invalid').addClass('is-valid');
+            return true;
+        }
+    }
+
+    $('#signin-password').focusout(function() {
+        var signin_password = $(this).val();
+        checkPassword(signin_password);
+    });
+
+    function checkPassword(password) {
+        var password_error;
+        if (password == '') {
+            password_error = 'Password cann\'t be empty';
+        } else if (password.length < 6) {
+            password_error = 'At least 6 character need';
+        } else if (!password_reg.test(password)) {
+            password_error = 'Need capital, small letter and digit';
+        }
+
+        if (password_error) {
+            $('#password-msg-in').removeClass('valid-feedback').addClass('invalid-feedback').text(password_error);
+            $('#signin-password').removeClass('is-valid').addClass('is-invalid');
+            return false;
+        } else {
+            $('#password-msg-in').removeClass('invalid-feedback').text('');
+            $('#signin-password').removeClass('is-invalid');
+            return true;
+        }
+    }
+
+
+    $('#signin-btn').click(function() {
+        var email = $('#signin-email').val().trim();
+        var password = $('#signin-password').val().trim();
+
+        emailExist(email).then(result =>{
+            
+            if (result && checkPassword(password)) {
+                (async function login() {
+                    var response = await $.get("/login-ajax/app/ajax/signin.php?" + $('#signin-form').serialize());
+
+                    if (response) {
+                        window.location = 'http://localhost/login-ajax/public/profile.php';
+                    } else {
+                        $('#password-msg-in').removeClass('valid-feedback').addClass('invalid-feedback').text('Password wrong!');
+                        $('#signin-password').removeClass('is-valid').addClass('is-invalid');
+                    }
+                })()
+               }
+        
+        });
+
+       
+
+    });
 
 });

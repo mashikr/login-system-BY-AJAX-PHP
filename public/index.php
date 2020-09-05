@@ -7,14 +7,16 @@
       <div class="card border-0 align-self-end mb-5" id="signin-div">
           <div class="card-header text-light text-center"><h5>Sign in <i class="fas fa-lock"></i></h5></div>
           <div class="card-body">
-            <form>
+            <form id="signin-form">
               <div class="form-group">
-                <input type="text" name="email" class="form-control" placeholder="Enter email">
+                <input type="text" name="email" id="signin-email" class="form-control" placeholder="Enter email">
+                <div id="email-msg-in"></div>
               </div>
               <div class="form-group">
-                <input type="password" name="password" class="form-control" placeholder="Enter password">
+                <input type="password" name="password" class="form-control" id="signin-password" placeholder="Enter password">
+                <div id="password-msg-in"></div>
               </div>
-              <input type="button" class="btn btn-success btn-block" value="Login">
+              <input type="button" class="btn btn-success btn-block" id="signin-btn" value="Login">
             </form>
             <div class="text-center mt-2">
             <a href="#" id="signin-alt">Create an account?</a>
