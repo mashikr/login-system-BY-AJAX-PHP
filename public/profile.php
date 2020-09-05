@@ -1,10 +1,22 @@
 <?php require_once 'include/header.php'; ?>
+<?php 
+if (!isset($_SESSION['user_id'])){
+    header('Location: index.php');
+} 
+if ($db && $_SESSION['user_id']) {
+    $sql = "SELECT * FROM `users` WHERE `id` = :id";
+    $stmt = $db->prepare($sql);
 
+    $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+?>
 <div class="bg-info h-100">
     <div class="row h-100">
         <div class="col-3 bg-secondary text-white">
             <div class="d-flex align-items-center flex-column">
-                <img class="img-fluid rounded-circle my-3" src="img/ashik.PNG" alt="Ashik">
+                <img class="img-fluid rounded-circle my-3" src="img/<?php echo $user['image'] ? $user['image'] : 'user.png'; ?>" alt="<?php echo $user['name']; ?>">
                 <form action="" method="post">
                     <div class="input-group ml-2">
                         <div class="custom-file">
@@ -18,27 +30,27 @@
                 </form>
             </div>
             <div class="d-flex flex-column m-2 mt-4 align-items-center">
-                <button class="btn btn-dark w-100 ml-2 mb-2 text-left"><i class="fas fa-signature mr-2"></i> Update Name</button>
-                <button class="btn btn-dark w-100 ml-2 mb-2 text-left"><i class="fas fa-user mr-2"></i> Update About</button>
-                <button class="btn btn-dark w-100 ml-2 mb-2 text-left"><i class="fas fa-phone mr-2"></i> Update Phone no</button>
-                <button class="btn btn-dark w-100 ml-2 mb-2 text-left"><i class="fab fa-facebook mr-2"></i> Update Facebook link</button>
-                <button class="btn btn-dark w-100 ml-2 mb-2 text-left"><i class="fab fa-twitter mr-2"></i> Update Twitter link</button>
+                <button class="btn btn-dark w-100 ml-2 mb-2 text-left" id="update-name"><i class="fas fa-signature mr-2"></i> Update Name</button>
+                <button class="btn btn-dark w-100 ml-2 mb-2 text-left" id="update-about"><i class="fas fa-user mr-2"></i> Update About</button>
+                <button class="btn btn-dark w-100 ml-2 mb-2 text-left" id="update-phone"><i class="fas fa-phone mr-2"></i> Update Phone no</button>
+                <button class="btn btn-dark w-100 ml-2 mb-2 text-left" id="update-fb"><i class="fab fa-facebook mr-2"></i> Update FB link</button>
+                <button class="btn btn-dark w-100 ml-2 mb-2 text-left" id="update-twitter"><i class="fab fa-twitter mr-2"></i> Update Twit link</button>
             </div>
         </div>
         <div class="col bg-light">
             <div class="card h-75 mt-5 mr-4 shadow">
                 <div class="card-body lead">
-                    <b>Name: </b><span id="name">Ashik</span>
+                    <b>Name: </b><span id="name"><?php echo $user['name']; ?></span>
                     <hr>
-                    <b>About: </b><span id="about">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda dignissimos, nemo voluptatem accusamus cumque facere veritatis eius harum quo officia esse consequuntur fugiat quod exercitationem et dolores numquam, porro consectetur!
-                    </span>
+                    <b>About: </b><span id="about"><?php echo $user['about']; ?></span>
                     <hr>
-                    <b>Phone no: </b><span id="phone">01712332r443</span> <br>
-                    <b>Email: </b><span id="email">ashik@gmail.com</span>
+                    <b>Phone no: </b><span id="phone"><?php $user['phone']; ?></span>
+                    <br>
+                    <b>Email: </b><span id="email"><?php echo $user['email']; ?></span>
                     <hr>
-                    <a href="#" id="fb-link"><i class="fab fa-facebook text-primary"></i> Facebook</a> <br>
-                    <a href="#" id="twitter-link"><i class="fab fa-twitter text-primary"></i> twitter</a>
+                    
+                    <p><a href="<?php  $user['facebook'];  ?>" id="fb-link"><i class="fab fa-facebook text-primary"></i> Facebook</a></p>
+                    <a href="<?php $user['twitter']; ?>" id="twitter-link"><i class="fab fa-twitter text-primary"></i> twitter</a>
                 </div>
             </div>
         </div>
@@ -57,10 +69,11 @@
       </div>
       <div class="modal-body">
         <input class="form-control" id="modal-input" type="text">
+        <span class="text-danger" id="error-msg"></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary" id="input-btn">Save changes</button>
       </div>
     </div>
   </div>
@@ -76,11 +89,12 @@
         </button>
       </div>
       <div class="modal-body">
-        <textarea name="" class="form-control" id="text-area" rows="4"></textarea>
+        <textarea name="" class="form-control" id="text-area" rows="5"></textarea>
+        <span class="text-danger" id="error-msg-text"></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary" id="text-btn">Save changes</button>
       </div>
     </div>
   </div>

@@ -14,6 +14,7 @@ if (isset($_GET['email'])) {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (password_verify($password, $row['password'])) {
+        $_SESSION['user_id'] = $row['id'];
        echo true;
     } else {
         echo false;

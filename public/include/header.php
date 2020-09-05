@@ -1,4 +1,4 @@
-<?php session_start(); ?>
+<?php require_once '../app/connection.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +15,17 @@
 <div class="main">
 <nav class="navbar navbar-dark bg-info">
   <div class="container">
-  <span class="navbar-brand">Login Ajax</span>
-  <div class="" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="index.php">Home</a>
-      </div>
-  </div>
+    <span class="navbar-brand">Login Ajax</span>
+    <div class="">
+      <div class="navbar-nav flex-row">
+        <li class="nav-item">
+          <a class="nav-link" href="index.php">Home</a>
+        </li>
+        <?php
+            if (isset($_SESSION['user_id'])){
+              echo '<li class="nav-item ml-3"><a class="nav-link" href="logout.php">Logout</a></li>';
+            } 
+        ?>
+    </div>
   </div>
 </nav>

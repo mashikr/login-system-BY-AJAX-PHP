@@ -261,4 +261,101 @@ $(document).ready(function() {
         });
     });
 
+    $('#update-name').click(function() {
+        $('#inputModal').modal('show');
+        $('#input-modal-title').text('Update Name');
+        $('#modal-input').val($('#name').text());
+        $('#error-msg').text('');
+
+        $('#input-btn').click(async function() {
+            var name = $('#modal-input').val().trim();
+            if (name == '') {
+                $('#error-msg').text('Name cann\'t be empty');
+            } else {
+                $('#error-msg').text('');
+                var response = await $.post("/login-ajax/app/ajax/profile.php", { 'name': name });
+                if (response == 1) {
+                    $('#inputModal').modal('hide');
+                    $('#name').text(name);
+                } else {
+                    $('#error-msg').text('Failed! try again.');
+                }
+            }
+        });
+    });
+
+    $('#update-about').click(function() {
+        $('#textModal').modal('show');
+        $('#text-area').val($('#about').text());
+        $('#error-msg-text').text('');
+
+        $('#text-btn').click(async function() {
+            var about = $('#text-area').val().trim();
+            var response = await $.post("/login-ajax/app/ajax/profile.php", { 'about': about });
+                if (response == 1) {
+                    $('#textModal').modal('hide');
+                    $('#about').text(about);
+                } else {
+                    $('#error-msg-text').text('Failed! try again.');
+                }
+        });
+    });
+
+    $('#update-phone').click(function() {
+        $('#inputModal').modal('show');
+        $('#input-modal-title').text('Update Phone no');
+        $('#modal-input').val($('#phone').text());
+        $('#error-msg').text('');
+
+        $('#input-btn').click(async function() {
+            var phone = $('#modal-input').val().trim();
+
+            var response = await $.post("/login-ajax/app/ajax/profile.php", { 'phone': phone });
+            if (response == 1) {
+                $('#inputModal').modal('hide');
+                $('#phone').text(phone);
+            } else {
+                $('#error-msg').text('Failed! try again.');
+            }
+        });
+    });
+
+    $('#update-fb').click(function() {
+        $('#inputModal').modal('show');
+        $('#input-modal-title').text('Update Facebook link');
+        $('#modal-input').val($('#fb-link').attr('href'));
+        $('#error-msg').text('');
+
+        $('#input-btn').click(async function() {
+            var link = $('#modal-input').val().trim();
+            
+            var response = await $.post("/login-ajax/app/ajax/profile.php", { 'fb_link': link });
+            if (response == 1) {
+                $('#inputModal').modal('hide');
+                $('#fb-link').attr('href', link);
+            } else {
+                $('#error-msg').text('Failed! try again.');
+            }
+        });
+    });
+
+    $('#update-twitter').click(function() {
+        $('#inputModal').modal('show');
+        $('#input-modal-title').text('Update Twitter link');
+        $('#modal-input').val($('#twitter-link').attr('href'));
+        $('#error-msg').text('');
+
+        $('#input-btn').click(async function() {
+            var link = $('#modal-input').val().trim();
+            
+            var response = await $.post("/login-ajax/app/ajax/profile.php", { 'twitter_link': link });
+            if (response == 1) {
+                $('#inputModal').modal('hide');
+                $('#twitter-link').attr('href', link);
+            } else {
+                $('#error-msg').text('Failed! try again.');
+            }
+        });
+    });
+
 });
