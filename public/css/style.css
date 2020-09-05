@@ -27,3 +27,6 @@ input {
 #signin-div, #signup-div {
     position: absolute !important;
 }
+.img-fluid {
+    height: 7rem;
+}

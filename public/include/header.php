@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +17,8 @@
   <div class="container">
   <span class="navbar-brand">Login Ajax</span>
   <div class="" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-link" href="index.php">Home</a>
+      <div class="navbar-nav">
+        <a class="nav-link" href="index.php">Home</a>
       </div>
   </div>
   </div>
