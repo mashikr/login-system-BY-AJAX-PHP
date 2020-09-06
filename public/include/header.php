@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="icon" href="img/icon.png" type="img/icon.png" />
-  <link rel="stylesheet" href="css/font-awesome.min.css">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/login-ajax/public/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/login-ajax/public/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/login-ajax/public/css/style.css">
   <title>Login Ajax</title>
 </head>
 <body>
@@ -23,6 +23,7 @@
         </li>
         <?php
             if (isset($_SESSION['user_id'])){
+              echo '<li class="nav-item ml-3"><a class="nav-link" href="profile.php">Profile</a></li>';
               echo '<li class="nav-item ml-3"><a class="nav-link" href="logout.php">Logout</a></li>';
             } 
         ?>

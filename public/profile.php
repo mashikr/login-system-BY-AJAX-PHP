@@ -11,22 +11,43 @@ if ($db && $_SESSION['user_id']) {
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+if (isset($_POST['upload'])) {
+  $image_name = $_FILES['image']['name'];
+  $image = $_FILES['image']['tmp_name'];
+  $old_img = $_POST['old_img'];
+
+  if (move_uploaded_file($image, "img/$image_name")) {
+    $sql = "UPDATE `users` SET`image`='" . $image_name . "' WHERE `id` = :id";
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+    if ($stmt->execute()) {
+       unlink("img/$old_img");
+    } else {
+        echo '<script>alert("something went wrong!")</script>';
+    }
+    header('Location: profile.php');
+  }
+
+}
 ?>
 <div class="bg-info h-100">
     <div class="row h-100">
         <div class="col-3 bg-secondary text-white">
             <div class="d-flex align-items-center flex-column">
                 <img class="img-fluid rounded-circle my-3" src="img/<?php echo $user['image'] ? $user['image'] : 'user.png'; ?>" alt="<?php echo $user['name']; ?>">
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="input-group ml-2">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                            <input type="file" class="custom-file-input" id="inputGroupFile01" name="image" aria-describedby="inputGroupFileAddon01">
                             <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                         </div>
                         <div class="input-group-append">
-                            <input type="submit" name="submit" value="Submit" class="btn btn-success" id="inputGroupFileAddon01">
+                            <input type="submit" name="upload" value="Upload" class="btn btn-success" id="inputGroupFileAddon01">
                         </div>
                     </div>
+                    <input type="hidden" name="old_img" value="<?php echo $user['image']; ?>">
                 </form>
             </div>
             <div class="d-flex flex-column m-2 mt-4 align-items-center">
@@ -44,13 +65,13 @@ if ($db && $_SESSION['user_id']) {
                     <hr>
                     <b>About: </b><span id="about"><?php echo $user['about']; ?></span>
                     <hr>
-                    <b>Phone no: </b><span id="phone"><?php $user['phone']; ?></span>
+                    <b>Phone no: </b><span id="phone"><?php echo $user['phone']; ?></span>
                     <br>
                     <b>Email: </b><span id="email"><?php echo $user['email']; ?></span>
                     <hr>
                     
-                    <p><a href="<?php  $user['facebook'];  ?>" id="fb-link"><i class="fab fa-facebook text-primary"></i> Facebook</a></p>
-                    <a href="<?php $user['twitter']; ?>" id="twitter-link"><i class="fab fa-twitter text-primary"></i> twitter</a>
+                    <p><a href="<?php  echo $user['facebook'];  ?>" target="_blank" id="fb-link"><i class="fab fa-facebook text-primary"></i> Facebook</a></p>
+                    <a href="<?php echo $user['twitter']; ?>" target="_blank" id="twitter-link"><i class="fab fa-twitter text-primary"></i> twitter</a>
                 </div>
             </div>
         </div>

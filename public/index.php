@@ -1,6 +1,12 @@
 <?php require_once 'include/header.php'; ?>
 <div class="form-area">
     <div class="row h-100 justify-content-end">
+      <div class="col justify-self-start text-white p-4 m-4">
+        <div class="display-4">About Site</div>
+        <span class="lead">
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illo totam laborum ex. Praesentium, amet modi, perspiciatis aspernatur expedita quas, repudiandae corrupti fugiat molestiae quibusdam perferendis. Enim quos consequuntur deserunt voluptatum.
+        </span>
+      </div>
       <div class="col-7 col-sm-6 col-md-4 col-lg-3 m-5 d-flex justify-content-center">
       <div id="registration-info"></div>
 
@@ -60,7 +66,7 @@
 </div>
 <div class="video-area">
   <video muted autoplay loop>
-      <source src="img/bg-video.mp4" type="video/mp4">
+      <source src="/login-ajax/public/img/bg-video.mp4" type="video/mp4">
   </video>
 </div>
 

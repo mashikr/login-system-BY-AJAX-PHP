@@ -357,5 +357,4 @@ $(document).ready(function() {
             }
         });
     });
-
 });
