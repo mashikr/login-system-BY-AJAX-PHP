@@ -23,7 +23,7 @@
         </li>
         <?php
             if (isset($_SESSION['user_id'])){
-              echo '<li class="nav-item ml-3"><a class="nav-link" href="profile.php">Profile</a></li>';
+              echo '<li class="nav-item ml-3"><a class="nav-link" href="/login-ajax/public/profile.php">Profile</a></li>';
               echo '<li class="nav-item ml-3"><a class="nav-link" href="logout.php">Logout</a></li>';
             } 
         ?>
